@@ -32,10 +32,10 @@
           </a>
           <div class="collapse" id="collapseDashboards" data-bs-parent="#accordionSidenav">
             <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-              <a class="nav-link" href="dashboard-1.html">
+              <NuxtLink class="nav-link" to="/panel/approval/veganlog">
                 Vegan Log
                 <span class="badge bg-primary-soft text-primary ms-auto">Updated</span>
-              </a>
+              </NuxtLink>
               <a class="nav-link" href="dashboard-2.html">Multipurpose</a>
               <a class="nav-link" href="dashboard-3.html">Affiliate</a>
             </nav>

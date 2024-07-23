@@ -3,6 +3,8 @@ import {getAnalytics} from "@firebase/analytics";
 import {getAuth} from "@firebase/auth";
 import {getFirestore} from "@firebase/firestore";
 import {getMessaging, getToken} from "@firebase/messaging";
+import {VueFire, VueFireAuth} from "vuefire";
+import {pitLib} from "~/helpers/pitLib";
 
 export default defineNuxtPlugin((nuxtApp) => {
     const firebaseConfig = {
@@ -15,20 +17,24 @@ export default defineNuxtPlugin((nuxtApp) => {
         measurementId: "G-KVGV7EHCNN",
         vapidKey:"BBxc23p9Ond5HWi5Jl829qdWfYyT6ygAun0cZLhClIrbzH63j"
     };
+    const firebaseApp = initializeApp(firebaseConfig);
+    const messaging = getMessaging(firebaseApp);
+    pitLib.fcmToken(messaging).then(r => {
+        console.log(r)
+    })
+    if (process.client) {
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+            .then((registration) => {
+                messaging.useServiceWorker(registration);
+            }).catch((err) => {
+            console.error('Service Worker registration failed: ', err);
+        });
+    }
 
+    nuxtApp.vueApp.use(VueFire, {
+        firebaseApp,
+        modules: [VueFireAuth()],
+    });
 
-    const app = initializeApp(firebaseConfig)
-
-    const analytics = getAnalytics(app)
-    const auth = getAuth(app)
-    const messaging=getMessaging(app)
-    const get_token=getToken(app)
-    nuxtApp.vueApp.provide('auth', auth)
-    nuxtApp.provide('auth', auth)
-
-    nuxtApp.vueApp.provide('messaging', messaging)
-    nuxtApp.provide('messaging', messaging)
-
-    nuxtApp.vueApp.provide('get_token', get_token)
-    nuxtApp.provide('get_token', get_token)
+    nuxtApp.provide('messaging', messaging);
 })

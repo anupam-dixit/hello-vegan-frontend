@@ -1,3 +1,9 @@
-.top-content .active{
-    border-right: 4px solid black;
+:root {
+    --primary_dark: #024a91;
+    --primary_medium: #6ab0f3;
+    --primary_light: #d7e9fc;
+
+    --secondary_medium: #159102;
+    --secondary_dark: #7dfc69;
+    --secondary_light: #cbfcc3;
 }
