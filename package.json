@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@firebase/app": "^0.10.7",
     "@quasar/extras": "^1.16.12",
     "firebase": "^10.12.4",
     "moment": "^2.30.1",
