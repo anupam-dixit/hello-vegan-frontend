@@ -12,6 +12,7 @@
   "dependencies": {
     "@firebase/app": "^0.10.7",
     "@quasar/extras": "^1.16.12",
+    "@vite-pwa/nuxt": "^0.9.1",
     "firebase": "^10.12.4",
     "moment": "^2.30.1",
     "nuxt": "^3.12.1",

@@ -18,7 +18,7 @@ export default defineNuxtConfig({
     // Homepage pre-rendered at build time
     '/panel*': {ssr: false},
   },
-  modules: ["nuxt-quasar-ui",],
+  modules: ["nuxt-quasar-ui", "@vite-pwa/nuxt"],
   server: {
     https: {
       key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
