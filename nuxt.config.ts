@@ -24,5 +24,27 @@ export default defineNuxtConfig({
       key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
       cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
     }
+  },
+  manifest: {
+    name: 'My Nuxt App',
+    short_name: 'NuxtApp',
+    description: 'My awesome Nuxt application!',
+    theme_color: '#ffffff',
+    icons: [
+      {
+        src: 'favicon.ico',
+        sizes: '512x512',
+        type: 'image/ico'
+      }
+    ]
+  },
+  workbox: {
+    navigateFallback: '/',
+    runtimeCaching: [
+      {
+        urlPattern: ({ request }) => request.destination === 'document',
+        handler: 'NetworkFirst'
+      }
+    ]
   }
 })
