@@ -19,9 +19,9 @@ export default defineNuxtPlugin((nuxtApp) => {
     };
     const firebaseApp = initializeApp(firebaseConfig);
     const messaging = getMessaging(firebaseApp);
-    pitLib.fcmToken(messaging).then(r => {
-        console.log(r)
-    })
+    // pitLib.fcmToken(messaging).then(r => {
+    //     console.log(r)
+    // })
     if (process.client) {
         navigator.serviceWorker.register('/firebase-messaging-sw.js')
             .then((registration) => {
