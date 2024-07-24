@@ -1,11 +1,12 @@
+// public/firebase-messaging-sw.js
 
+// // Import Firebase scripts
 importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js');
 
-// Initialize the Firebase app in the service worker by passing in
-// your app's Firebase config object.
-// https://firebase.google.com/docs/web/setup#config-object
-const firebaseApp = initializeApp({
+// Initialize the Firebase app in the service worker script
+
+const firebaseConfig = {
     apiKey: "AIzaSyDBLrsp6EWHTNu0fynODZpKiPq2iL8M2wU",
     authDomain: "hello-vegan.firebaseapp.com",
     projectId: "hello-vegan",
@@ -14,19 +15,20 @@ const firebaseApp = initializeApp({
     appId: "1:86454988086:web:d4894c94467cb5907f1797",
     measurementId: "G-KVGV7EHCNN",
     vapidKey:"BBxc23p9Ond5HWi5Jl829qdWfYyT6ygAun0cZLhClIrbzH63j"
-});
-console.log("in sw")
+};
+
 firebase.initializeApp(firebaseConfig);
 
+// Retrieve an instance of Firebase Messaging so that it can handle background messages
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
     console.log('[firebase-messaging-sw.js] Received background message ', payload);
-    // Customize your notification here
+    // Customize notification here
     const notificationTitle = payload.notification.title;
     const notificationOptions = {
         body: payload.notification.body,
-        icon: '/favicon.ico'
+        icon: '/firebase-logo.png'
     };
 
     self.registration.showNotification(notificationTitle, notificationOptions);

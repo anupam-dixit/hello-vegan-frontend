@@ -10,5 +10,8 @@ export const endpoints={
         create:env.ENDPOINT+'veganpost/create',
         index:env.ENDPOINT+'veganpost/index',
         update:env.ENDPOINT+'veganpost/update',
+    },
+    fcm:{
+        send:env.ENDPOINT+'fb/send',
     }
 }

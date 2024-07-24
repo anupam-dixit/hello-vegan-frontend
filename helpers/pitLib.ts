@@ -1,7 +1,6 @@
 import nuxtStorage from "nuxt-storage/nuxt-storage";
 import Swal from "sweetalert2";
 import {env} from "./env";
-import {getToken} from "@firebase/messaging";
 
 export const pitLib={
     auth:{

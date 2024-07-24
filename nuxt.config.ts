@@ -12,39 +12,33 @@ export default defineNuxtConfig({
     }
   },
   app:{
-
+    head:{
+      script:[
+          "https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js",
+          "https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js",
+      ]
+    }
   },
   routeRules: {
     // Homepage pre-rendered at build time
     '/panel*': {ssr: false},
   },
-  modules: ["nuxt-quasar-ui", "@vite-pwa/nuxt"],
+  modules: ["nuxt-quasar-ui", "@vite-pwa/nuxt","nuxt-vuefire"],
   server: {
     https: {
       key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),
       cert: fs.readFileSync(path.resolve(__dirname, 'localhost.pem'))
     }
-  },
-  manifest: {
-    name: 'My Nuxt App',
-    short_name: 'NuxtApp',
-    description: 'My awesome Nuxt application!',
-    theme_color: '#ffffff',
-    icons: [
-      {
-        src: 'favicon.ico',
-        sizes: '512x512',
-        type: 'image/ico'
-      }
-    ]
-  },
-  workbox: {
-    navigateFallback: '/',
-    runtimeCaching: [
-      {
-        urlPattern: ({ request }) => request.destination === 'document',
-        handler: 'NetworkFirst'
-      }
-    ]
+  },vuefire: {
+    config:{
+      apiKey: "AIzaSyDBLrsp6EWHTNu0fynODZpKiPq2iL8M2wU",
+      authDomain: "hello-vegan.firebaseapp.com",
+      projectId: "hello-vegan",
+      storageBucket: "hello-vegan.appspot.com",
+      messagingSenderId: "86454988086",
+      appId: "1:86454988086:web:d4894c94467cb5907f1797",
+      measurementId: "G-KVGV7EHCNN",
+      vapidKey:"BBxc23p9Ond5HWi5Jl829qdWfYyT6ygAun0cZLhClIrbzH63j"
+    }
   }
 })

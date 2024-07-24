@@ -5,7 +5,7 @@ import UiPanel from "~/components/parts/ui-panel.vue";
 import nuxtStorage from "nuxt-storage/nuxt-storage";
 import {env} from "~/helpers/env";
 import {pitLib} from "~/helpers/pitLib";
-import {getMessaging} from "@firebase/messaging";
+import {getMessaging, getToken} from "@firebase/messaging";
 import {initializeApp} from "@firebase/app";
 
 definePageMeta({
@@ -30,6 +30,15 @@ useHead({
   ]
 });
 
+import { useFirebaseApp } from 'vuefire'
+let currentToken
+if (process.client){
+  const firebaseApp = useFirebaseApp()
+  const messaging = getMessaging(firebaseApp)
+  currentToken = await getToken(messaging, { vapidKey: 'BBxc23p9Ond5HWi5Jl829qdWfYyT6ygAun0cZLhClIrbzH63jh1S5g51Enw0kFyUGivrIdLB4ej50EdLASzonV8' });
+}
+
+
 const runTime=reactive({
   loading:false,
 })
@@ -48,6 +57,10 @@ function login() {
       pitLib.auth.set(loginResponse.value?.data)
       location.href='/'
       // nuxtStorage.sessionStorage.setData(env.KEYWORDS.USER_SESSION_KEY,loginResponse.value?.data,env.SES_LOGIN_EXPIRY_DAYS,'d')
+    }else {
+      $fetch(endpoints.fcm.send,{
+        method:"post",body:{token:currentToken}
+      })
     }
     runTime.loading=false
   })

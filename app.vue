@@ -2,7 +2,7 @@
 
 </script>
 <template>
-  <NuxtPwaManifest />
+  <NuxtPwaAssets />
   <nuxt-layout>
     <nuxt-page />
   </nuxt-layout>
