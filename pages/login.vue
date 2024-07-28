@@ -35,7 +35,7 @@ let currentToken
 if (process.client){
   const firebaseApp = useFirebaseApp()
   const messaging = getMessaging(firebaseApp)
-  currentToken = await getToken(messaging, { vapidKey: 'BBxc23p9Ond5HWi5Jl829qdWfYyT6ygAun0cZLhClIrbzH63jh1S5g51Enw0kFyUGivrIdLB4ej50EdLASzonV8' });
+  currentToken = await getToken(messaging, { vapidKey: env.FCM.vapidKey });
 }
 
 
@@ -43,7 +43,7 @@ const runTime=reactive({
   loading:false,
 })
 const fd=reactive({
-  email:'',password:''
+  email:'',password:'',fcm_token:currentToken
 })
 const divResp=ref()
 const loginResponse=ref<ApiResponse|any>()

@@ -44,7 +44,7 @@ function confUpd(accept:Boolean,v:any){
     }).then((result) => {
       console.log(result)
       if (result.isConfirmed) {
-        $fetch(endpoints.veganlog.update,{
+        $fetch(endpoints.blog.update,{
           method:"post",
           body:{
             _id:v?._id,
@@ -77,7 +77,7 @@ function confUpd(accept:Boolean,v:any){
     }).then((result) => {
       console.log(result)
       if (result.isConfirmed) {
-        $fetch(endpoints.veganlog.update,{
+        $fetch(endpoints.blog.update,{
           method:"post",
           body:{
             _id:v?._id,
