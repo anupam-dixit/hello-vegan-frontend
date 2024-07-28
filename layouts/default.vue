@@ -12,11 +12,15 @@ useHead({
     { rel: 'stylesheet', href: '/tpl1/css/emoji.css' },
     { rel: 'stylesheet', href: '/tpl1/css/lightbox.css' },
     { rel: 'stylesheet', href: '/tpl1/css/custom.css' },
+    { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css' },
   ],
   script: [
     {src: '/tpl1/js/plugin.js', body: true},
     {src: '/tpl1/js/lightbox.js', body: true},
     {src: '/tpl1/js/scripts.js', body: true},
+    {src: 'https://cdn.jsdelivr.net/npm/@yaireo/tagify', body: true},
+    {src: 'https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js', body: true},
+    {src: 'https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js', defer: true, body: true},
   ]
 });
 
@@ -37,32 +41,7 @@ useHead({
       <div class="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
 
         <!-- loader wrapper -->
-        <div class="preloader-wrap p-3">
-          <div class="box shimmer">
-            <div class="lines">
-              <div class="line s_shimmer"></div>
-              <div class="line s_shimmer"></div>
-              <div class="line s_shimmer"></div>
-              <div class="line s_shimmer"></div>
-            </div>
-          </div>
-          <div class="box shimmer mb-3">
-            <div class="lines">
-              <div class="line s_shimmer"></div>
-              <div class="line s_shimmer"></div>
-              <div class="line s_shimmer"></div>
-              <div class="line s_shimmer"></div>
-            </div>
-          </div>
-          <div class="box shimmer">
-            <div class="lines">
-              <div class="line s_shimmer"></div>
-              <div class="line s_shimmer"></div>
-              <div class="line s_shimmer"></div>
-              <div class="line s_shimmer"></div>
-            </div>
-          </div>
-        </div>
+
         <!-- loader wrapper -->
 
         <div class="section full pe-3 ps-4 pt-4 position-relative feed-body">

@@ -1,31 +1,54 @@
 <script setup lang="ts">
+import type {ApiResponse, PaginatedApiResponse} from "~/types";
 import {endpoints} from "~/helpers/endpoints";
 import {pitLib} from "~/helpers/pitLib";
-import moment from "moment";
-import {env} from "~/helpers/env";
-import type {PaginatedApiResponse} from "~/types";
-import {Vue3Lottie} from "vue3-lottie";
+import UiPanel from "~/components/parts/ui-panel.vue";
 
 definePageMeta({
   layout:"default",
-  middleware:"ensure-login"
+  middleware:"ensure-login",
 })
-const page=ref(1)
-const vlogs=ref<Array>([])
-const {data:vlogsResponse,loading:loadingVlogsResponse,refresh:vlogsRefetch} =useFetch<PaginatedApiResponse>(endpoints.veganlog.index,{
+const loadingCreateResp=ref<Boolean>(false)
+const createResp=ref<ApiResponse>()
+const field_logo=ref(null)
+const logo_preview=ref(null)
+const formData=reactive({
+  title:"",tags:'',content:null,logo:null,category:null
+})
+const {data:categResp,loading:loadingCategResponse,refresh:refetch} =useFetch<PaginatedApiResponse>(endpoints.blog.category.index,{
   method:"post",
   body:{
-    status:"approved"
+    status:"active"
   },
-  headers:{
-    Authorization: "Bearer "+pitLib.auth.get()?.token,
-  },
-  query:{page:page,pagination:1}
+  headers:pitLib.util.headers(),
+  query:{pagination:500}
 })
-watch(vlogsResponse,vr=>{
-  if (vr.data?.data){
-    vlogs.value.push(...vr?.data?.data)
+function submit() {
+  loadingCreateResp.value=true
+  var tags=formData.tags?JSON.parse(formData.tags).map(o=>o.value):null
+  console.log(tags)
+  let fd=new FormData()
+  fd.append("title",formData.title)
+  if (tags){
+    tags.forEach((item) => fd.append("tags", item))
   }
+  fd.append("content",formData.content)
+  fd.append("logo",field_logo.value?.files[0])
+  fd.append("category",formData.category)
+  $fetch(endpoints.blog.create,{
+    method:"post",
+    headers:pitLib.util.headers(),
+    body:fd
+  }).then((d:PaginatedApiResponse)=>{
+    loadingCreateResp.value=false
+    createResp.value=d
+  })
+}
+async function handleLogo() {
+  logo_preview.value=await pitLib.media.getBase64(field_logo.value?.files[0])
+}
+onMounted(()=>{
+  new Tagify(document.querySelector('#tags'))
 })
 </script>
 
@@ -36,71 +59,65 @@ watch(vlogsResponse,vr=>{
     <div class="middle-sidebar-bottom">
       <div class="middle-sidebar-left">
         <!-- loader wrapper -->
-
         <!-- loader wrapper -->
         <div class="row feed-body">
           <div class="col-xl-8 col-xxl-9 col-lg-8">
+            <div class="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-4 pe-4 pb-3 mb-3">
+              <div class="card-body p-0">
+                <h5>Create New Blog</h5>
+              </div>
+              <div class="row mt-3">
+                <div class="col-12 col-md-6 col-lg-6 col-xl-6 mb-2">
+                  <div class="form-group">
+                    <label class="mont-font fw-600 font-xsss">Title</label>
+                    <input v-model="formData.title" type="text" class="form-control">
+                  </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6 col-xl-6 mb-2">
+                  <div class="form-group" v-if="!loadingCategResponse">
+                    <label class="mont-font fw-600 font-xsss">Category</label>
+                    <select v-model="formData.category" class="form-control">
+                      <option :value="c?._id" v-for="c in categResp?.data?.data">{{c?.title}}</option>
+                    </select>
+                  </div>
+                </div>
 
-           <common-veganlog-create></common-veganlog-create>
-
-            <div v-for="v in vlogs" class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3">
-              <div class="card-body p-0 d-flex">
-                <figure class="avatar me-3"><img src="/tpl1/images/user-8.png" alt="image" class="shadow-sm rounded-circle w45"></figure>
-                <h4 class="fw-700 text-grey-900 font-xssss mt-1"><span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">{{moment(v?.created_at).fromNow()}}</span></h4>
-                <a href="#" class="ms-auto" id="dropdownMenu5" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
-                <div class="dropdown-menu dropdown-menu-start p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu5">
-                  <ul>
-                    <li><i class="fa-solid fa-check me-2"></i> Save Link</li>
-                  </ul>
+                <div class="col-12 col-md-6 col-lg-6 col-xl-6 mb-2">
+                  <div class="form-group" >
+                    <div class="form-group" v-if="!loadingCategResponse">
+                      <label class="mont-font fw-600 font-xsss">Tags</label>
+                      <input @change="formData.tags=$event.target?.tagifyValue" id="tags" type="text" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 mb-2">
+                  <div class="form-group" >
+                    <div class="form-group" v-if="!loadingCategResponse">
+                      <label class="mont-font fw-600 font-xsss">Tags</label>
+                      <client-only>
+                        <editor v-model="formData.content"></editor>
+                      </client-only>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6 col-xl-6 mb-2">
+                  <div class="form-group mb-0 w-100">
+                    <input ref="field_logo" @change="handleLogo()" type="file" name="file" id="file" class="input-file">
+                    <label for="file" class="rounded-3 text-center bg-white btn-tertiary js-labelFile p-4 w-100 border-dashed">
+                      <i v-if="!logo_preview" class="ti-cloud-down large-icon me-3 d-block"></i>
+                      <span v-if="!logo_preview" class="js-fileName">Choose Logo or Drop Here</span>
+                      <img v-if="logo_preview" :src="logo_preview" class="img-thumbnail">
+                    </label>
+                  </div>
                 </div>
               </div>
-              <div v-if="v?.media?.length" class="card-body p-0 mb-3 rounded-3 overflow-hidden">
-                <div v-for="media in v?.media" class="">
-                  <a v-if="media?.ref_code=='vegan_log_video'" class="mb-2 rounded">
-                    <video controls class="float-right w-100">
-                      <source :src="env.BASEPOINT+ media?.path" type="video/mp4">
-                    </video>
-                  </a>
-                  <img v-if="media?.ref_code=='vegan_log_image'" :src="media?.is_local?env.BASEPOINT+ media?.path:media?.path" class="img-fluid mb-2">
+              <ui-panel class="mt-3" ref="divResp" :type="createResp?.status===true?'success':'warning'" :content="createResp?.message" @show="createResp=$event" v-if="createResp"></ui-panel>
+              <div class="row mt-3">
+                <div class="col text-right">
+                  <q-btn @click="submit" class="" :loading="loadingCreateResp" :disable="loadingCreateResp" color="primary"  label="Post" ></q-btn>
                 </div>
-              </div>
-              <div class="card-body p-0 me-lg-5">
-                <p v-html="v?.content"></p>
-              </div>
-              <div class="card-body d-flex p-0">
-                <a href="#" class="emoji-bttn d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2">
-                  <i class="fa-solid text-white fa-thumbs-up bg-blue-gradiant me-1 btn-round-xs fa-lg"></i>
-                  <i class="feather-heart text-white bg-red-gradiant me-2 btn-round-xs"></i>
-                  2.8K Like
-                </a>
-                <div class="emoji-wrap">
-                  <ul class="emojis list-inline mb-0">
-                    <li class="emoji list-inline-item"><i class="fa-regular fa-face-angry"></i></li>
-                    <li class="emoji list-inline-item"><i class="fa-regular fa-face-surprise"></i></li>
-                  </ul>
-                </div>
-                <a href="#" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss">22 Comment</span></a>
-                <a href="#" class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
               </div>
             </div>
-
-            <div v-if="vlogsResponse?.data?.pages>page" class="row mt-2">
-              <div class="col text-center">
-                <button @click="page++;vlogsRefetch()" v-if="!loadingVlogsResponse" class="btn btn-primary btn-lg text-white rounded shadow-lg">
-                  Load More
-                  <i class="fa-solid fa-angle-down ms-2"></i>
-                </button>
-                <client-only>
-                  <Vue3Lottie
-                      v-if="loadingVlogsResponse"
-                      animationLink="/json/loading_2.json"
-                      :height="200"
-                      :width="200"
-                  />
-                </client-only>
-              </div>
-            </div>
-
           </div>
           <div class="col-xl-4 col-xxl-3 col-lg-4 ps-lg-0">
             <div class="card w-100 shadow-xss rounded-xxl border-0 mb-3">
@@ -235,4 +252,6 @@ watch(vlogsResponse,vr=>{
   <!-- main content -->
 </template>
 
-<style scoped></style>
+<style scoped>
+
+</style>

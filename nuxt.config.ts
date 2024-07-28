@@ -13,17 +13,17 @@ export default defineNuxtConfig({
   },
   app:{
     head:{
-      script:[
-          "https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js",
-          "https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js",
-      ]
+      // script:[
+      //     "https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js",
+      //     "https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js",
+      // ]
     }
   },
   routeRules: {
     // Homepage pre-rendered at build time
     '/panel*': {ssr: false},
   },
-  modules: ["nuxt-quasar-ui", "@vite-pwa/nuxt","nuxt-vuefire"],
+  modules: ["nuxt-quasar-ui", "@vite-pwa/nuxt", "nuxt-vuefire"],
   server: {
     https: {
       key: fs.readFileSync(path.resolve(__dirname, 'localhost-key.pem')),

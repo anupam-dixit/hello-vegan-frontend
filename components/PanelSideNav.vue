@@ -1,4 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const route=useRoute()
+console.log(route.path)
+</script>
 
 <template>
   <div id="layoutSidenav_nav">
@@ -25,94 +28,44 @@
           <!-- Sidenav Menu Heading (Core)-->
           <div class="sidenav-menu-heading">Core</div>
           <!-- Sidenav Accordion (Dashboard)-->
-          <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseDashboards" aria-expanded="false" aria-controls="collapseDashboards">
+          <a class="nav-link" :class="{'collapsed':!route.path.includes('approval')}" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseDashboards" aria-expanded="false" aria-controls="collapseDashboards">
             <div class="nav-link-icon"><i class="fa-solid fa-lg fa-chart-line"></i></div>
             Approvals
             <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
           </a>
-          <div class="collapse" id="collapseDashboards" data-bs-parent="#accordionSidenav">
+          <div class="collapse" :class="{'show':route.path.includes('approval')}" id="collapseDashboards" data-bs-parent="#accordionSidenav">
             <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-              <NuxtLink class="nav-link" to="/panel/approval/veganlog">
+              <NuxtLink class="nav-link" :class="{'active':route.path.includes('approval/veganlog')}" to="/panel/approval/veganlog">
                 Vegan Log
                 <span class="badge bg-primary-soft text-primary ms-auto">Updated</span>
               </NuxtLink>
-              <a class="nav-link" href="dashboard-2.html">Multipurpose</a>
-              <a class="nav-link" href="dashboard-3.html">Affiliate</a>
+              <NuxtLink class="nav-link" :class="{'active':route.path.includes('approval/blog')}" to="/panel/approval/blog">
+                Blog
+              </NuxtLink>
             </nav>
           </div>
           <!-- Sidenav Heading (Custom)-->
-          <div class="sidenav-menu-heading">Custom</div>
+          <div class="sidenav-menu-heading">Modules</div>
           <!-- Sidenav Accordion (Pages)-->
-          <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+          <a class="nav-link" :class="{'collapsed':!route.path.includes('panel/blog/')}" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
             <div class="nav-link-icon"><i class="fa-regular fa-file-lines"></i></div>
-            Pages
+            Blogs
             <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
           </a>
-          <div class="collapse" id="collapsePages" data-bs-parent="#accordionSidenav">
+          <div class="collapse" :class="{'show':route.path.includes('panel/blog/category')}" id="collapsePages" data-bs-parent="#accordionSidenav">
             <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
               <!-- Nested Sidenav Accordion (Pages -> Account)-->
-              <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAccount" aria-expanded="false" aria-controls="pagesCollapseAccount">
-                Account
+              <a class="nav-link" :class="{'collapsed':!route.path.includes('panel/blog/')}" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAccount" aria-expanded="false" aria-controls="pagesCollapseAccount">
+                Categories
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
               </a>
-              <div class="collapse" id="pagesCollapseAccount" data-bs-parent="#accordionSidenavPagesMenu">
+              <div class="collapse" :class="{'show':route.path.includes('panel/blog/category')}" id="pagesCollapseAccount" data-bs-parent="#accordionSidenavPagesMenu">
                 <nav class="sidenav-menu-nested nav">
-                  <a class="nav-link" href="account-profile.html">Profile</a>
-                  <a class="nav-link" href="account-billing.html">Billing</a>
-                  <a class="nav-link" href="account-security.html">Security</a>
-                  <a class="nav-link" href="account-notifications.html">Notifications</a>
+                  <NuxtLink :class="{'active':route.path.includes('/blog/category/')}" class="nav-link" to="/panel/blog/category/">List</NuxtLink>
+                  <NuxtLink class="nav-link" to="/panel/blog/category/create">Create</NuxtLink>
                 </nav>
               </div>
-              <!-- Nested Sidenav Accordion (Pages -> Authentication)-->
-              <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                Authentication
-                <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-              </a>
-              <div class="collapse" id="pagesCollapseAuth" data-bs-parent="#accordionSidenavPagesMenu">
-                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesAuth">
-                  <!-- Nested Sidenav Accordion (Pages -> Authentication -> Basic)-->
-                  <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuthBasic" aria-expanded="false" aria-controls="pagesCollapseAuthBasic">
-                    Basic
-                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                  </a>
-                  <div class="collapse" id="pagesCollapseAuthBasic" data-bs-parent="#accordionSidenavPagesAuth">
-                    <nav class="sidenav-menu-nested nav">
-                      <a class="nav-link" href="auth-login-basic.html">Login</a>
-                      <a class="nav-link" href="auth-register-basic.html">Register</a>
-                      <a class="nav-link" href="auth-password-basic.html">Forgot Password</a>
-                    </nav>
-                  </div>
-                  <!-- Nested Sidenav Accordion (Pages -> Authentication -> Social)-->
-                  <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuthSocial" aria-expanded="false" aria-controls="pagesCollapseAuthSocial">
-                    Social
-                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                  </a>
-                  <div class="collapse" id="pagesCollapseAuthSocial" data-bs-parent="#accordionSidenavPagesAuth">
-                    <nav class="sidenav-menu-nested nav">
-                      <a class="nav-link" href="auth-login-social.html">Login</a>
-                      <a class="nav-link" href="auth-register-social.html">Register</a>
-                      <a class="nav-link" href="auth-password-social.html">Forgot Password</a>
-                    </nav>
-                  </div>
-                </nav>
-              </div>
-              <!-- Nested Sidenav Accordion (Pages -> Error)-->
-              <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
-                Error
-                <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-              </a>
-              <div class="collapse" id="pagesCollapseError" data-bs-parent="#accordionSidenavPagesMenu">
-                <nav class="sidenav-menu-nested nav">
-                  <a class="nav-link" href="error-400.html">400 Error</a>
-                  <a class="nav-link" href="error-401.html">401 Error</a>
-                  <a class="nav-link" href="error-403.html">403 Error</a>
-                  <a class="nav-link" href="error-404-1.html">404 Error 1</a>
-                  <a class="nav-link" href="error-404-2.html">404 Error 2</a>
-                  <a class="nav-link" href="error-500.html">500 Error</a>
-                  <a class="nav-link" href="error-503.html">503 Error</a>
-                  <a class="nav-link" href="error-504.html">504 Error</a>
-                </nav>
-              </div>
+
               <a class="nav-link" href="pricing.html">Pricing</a>
               <a class="nav-link" href="invoice.html">Invoice</a>
             </nav>

@@ -13,5 +13,14 @@ export const endpoints={
     },
     fcm:{
         send:env.ENDPOINT+'fb/send',
+    },
+    blog:{
+        category:{
+            create:env.ENDPOINT+'blog/category/create',
+            index:env.ENDPOINT+'blog/category/index',
+            delete:env.ENDPOINT+'blog/category/delete',
+        },
+        create:env.ENDPOINT+'blog/create',
+        index:env.ENDPOINT+'blog/index',
     }
 }

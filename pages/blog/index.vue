@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import {env} from "~/helpers/env";
+import moment from "moment/moment";
+import UiPanel from "~/components/parts/ui-panel.vue";
+import type {PaginatedApiResponse} from "~/types";
 import {endpoints} from "~/helpers/endpoints";
 import {pitLib} from "~/helpers/pitLib";
-import moment from "moment";
-import {env} from "~/helpers/env";
-import type {PaginatedApiResponse} from "~/types";
 import {Vue3Lottie} from "vue3-lottie";
 
 definePageMeta({
@@ -11,20 +12,18 @@ definePageMeta({
   middleware:"ensure-login"
 })
 const page=ref(1)
-const vlogs=ref<Array>([])
-const {data:vlogsResponse,loading:loadingVlogsResponse,refresh:vlogsRefetch} =useFetch<PaginatedApiResponse>(endpoints.veganlog.index,{
+const blogs=ref<Array>([])
+const {data:blogsResponse,loading:loadingBlogsResponse,refresh:blogsRefetch} =useFetch<PaginatedApiResponse>(endpoints.blog.index,{
   method:"post",
   body:{
-    status:"approved"
+    status:"active"
   },
-  headers:{
-    Authorization: "Bearer "+pitLib.auth.get()?.token,
-  },
+  headers:pitLib.util.headers(),
   query:{page:page,pagination:1}
 })
-watch(vlogsResponse,vr=>{
+watch(blogsResponse,vr=>{
   if (vr.data?.data){
-    vlogs.value.push(...vr?.data?.data)
+    blogs.value.push(...vr?.data?.data)
   }
 })
 </script>
@@ -36,37 +35,40 @@ watch(vlogsResponse,vr=>{
     <div class="middle-sidebar-bottom">
       <div class="middle-sidebar-left">
         <!-- loader wrapper -->
-
         <!-- loader wrapper -->
         <div class="row feed-body">
           <div class="col-xl-8 col-xxl-9 col-lg-8">
+            <div class="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-4 pe-4 pb-3 mb-3">
+              <div class="card-body p-0">
+                <NuxtLink to="/blog/create" class=" font-xssss fw-600 text-grey-500 card-body p-0 d-flex align-items-center"><i class="btn-round-sm font-xs text-primary fa-solid fa-plus me-2 bg-greylight"></i>
+                  Add New Blog
+                </NuxtLink>
+              </div>
 
-           <common-veganlog-create></common-veganlog-create>
-
-            <div v-for="v in vlogs" class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3">
-              <div class="card-body p-0 d-flex">
-                <figure class="avatar me-3"><img src="/tpl1/images/user-8.png" alt="image" class="shadow-sm rounded-circle w45"></figure>
-                <h4 class="fw-700 text-grey-900 font-xssss mt-1"><span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">{{moment(v?.created_at).fromNow()}}</span></h4>
-                <a href="#" class="ms-auto" id="dropdownMenu5" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
-                <div class="dropdown-menu dropdown-menu-start p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu5">
-                  <ul>
-                    <li><i class="fa-solid fa-check me-2"></i> Save Link</li>
-                  </ul>
+            </div>
+            <div v-for="v in blogs" class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3">
+              <NuxtLink :to="'/blog/'+v?.slug">
+                <div class="card-body p-0 d-flex">
+                  <figure class="avatar me-3"><img src="/tpl1/images/user-8.png" alt="image" class="shadow-sm rounded-circle w45"></figure>
+                  <h4 class="fw-700 text-grey-900 font-xssss mt-1"><span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
+                  {{moment(v?.created_at).fromNow()}}
+                  <br>
+                  <strong class="text-secondary">{{v?.created_by?.[0]?.name}}</strong>
+                </span></h4>
+                  <a href="#" class="ms-auto" id="dropdownMenu5" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
+                  <div class="dropdown-menu dropdown-menu-start p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu5">
+                    <ul>
+                      <li><i class="fa-solid fa-check me-2"></i> Save Link</li>
+                    </ul>
+                  </div>
                 </div>
-              </div>
-              <div v-if="v?.media?.length" class="card-body p-0 mb-3 rounded-3 overflow-hidden">
-                <div v-for="media in v?.media" class="">
-                  <a v-if="media?.ref_code=='vegan_log_video'" class="mb-2 rounded">
-                    <video controls class="float-right w-100">
-                      <source :src="env.BASEPOINT+ media?.path" type="video/mp4">
-                    </video>
-                  </a>
-                  <img v-if="media?.ref_code=='vegan_log_image'" :src="media?.is_local?env.BASEPOINT+ media?.path:media?.path" class="img-fluid mb-2">
+                <h5 class="text-primary-soft text-truncate">{{v?.title}}</h5>
+                <div v-if="v?.media?.length" class="card-body p-0 mb-3 rounded-3 overflow-hidden">
+                  <div v-for="media in v?.media" class="">
+                    <img v-if="media?.ref_code=='blog_image'" :src="media?.is_local?env.BASEPOINT+ media?.path:media?.path" class="img-fluid mb-2">
+                  </div>
                 </div>
-              </div>
-              <div class="card-body p-0 me-lg-5">
-                <p v-html="v?.content"></p>
-              </div>
+              </NuxtLink>
               <div class="card-body d-flex p-0">
                 <a href="#" class="emoji-bttn d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2">
                   <i class="fa-solid text-white fa-thumbs-up bg-blue-gradiant me-1 btn-round-xs fa-lg"></i>
@@ -80,19 +82,19 @@ watch(vlogsResponse,vr=>{
                   </ul>
                 </div>
                 <a href="#" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss">22 Comment</span></a>
-                <a href="#" class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
+                <a class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
               </div>
             </div>
 
-            <div v-if="vlogsResponse?.data?.pages>page" class="row mt-2">
+            <div v-if="blogsResponse?.data?.pages>page" class="row mt-2">
               <div class="col text-center">
-                <button @click="page++;vlogsRefetch()" v-if="!loadingVlogsResponse" class="btn btn-primary btn-lg text-white rounded shadow-lg">
+                <button @click="page++;blogsRefetch()" v-if="!loadingBlogsResponse" class="btn btn-primary btn-lg text-white rounded shadow-lg">
                   Load More
                   <i class="fa-solid fa-angle-down ms-2"></i>
                 </button>
                 <client-only>
                   <Vue3Lottie
-                      v-if="loadingVlogsResponse"
+                      v-if="loadingBlogsResponse"
                       animationLink="/json/loading_2.json"
                       :height="200"
                       :width="200"
@@ -100,7 +102,6 @@ watch(vlogsResponse,vr=>{
                 </client-only>
               </div>
             </div>
-
           </div>
           <div class="col-xl-4 col-xxl-3 col-lg-4 ps-lg-0">
             <div class="card w-100 shadow-xss rounded-xxl border-0 mb-3">

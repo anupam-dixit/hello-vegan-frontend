@@ -22,13 +22,24 @@ firebase.initializeApp(firebaseConfig);
 // Retrieve an instance of Firebase Messaging so that it can handle background messages
 const messaging = firebase.messaging();
 
+messaging.onMessage((payload) => {
+    console.log('[firebase-messaging-sw.js] Received foreground message ', payload);
+    // Customize notification here
+    const notificationTitle = payload.notification.title;
+    const notificationOptions = {
+        body: payload.notification.body,
+        icon: 'favicon.ico'
+    };
+
+    self.registration.showNotification(notificationTitle, notificationOptions);
+});
 messaging.onBackgroundMessage((payload) => {
     console.log('[firebase-messaging-sw.js] Received background message ', payload);
     // Customize notification here
     const notificationTitle = payload.notification.title;
     const notificationOptions = {
         body: payload.notification.body,
-        icon: '/firebase-logo.png'
+        icon: 'favicon.ico'
     };
 
     self.registration.showNotification(notificationTitle, notificationOptions);

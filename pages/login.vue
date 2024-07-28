@@ -58,9 +58,9 @@ function login() {
       location.href='/'
       // nuxtStorage.sessionStorage.setData(env.KEYWORDS.USER_SESSION_KEY,loginResponse.value?.data,env.SES_LOGIN_EXPIRY_DAYS,'d')
     }else {
-      $fetch(endpoints.fcm.send,{
-        method:"post",body:{token:currentToken}
-      })
+      // $fetch(endpoints.fcm.send,{
+      //   method:"post",body:{token:currentToken}
+      // })
     }
     runTime.loading=false
   })

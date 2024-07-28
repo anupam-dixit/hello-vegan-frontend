@@ -1,12 +1,9 @@
 <script setup>
-
 </script>
-<template>
-  <NuxtPwaAssets />
-  <nuxt-layout>
-    <nuxt-page />
-  </nuxt-layout>
-</template>
-<style>
 
-</style>
+<template>
+  <NuxtLoadingIndicator color="#348feb" height="5"></NuxtLoadingIndicator>
+  <NuxtLayout>
+      <NuxtPage />
+  </NuxtLayout>
+</template>

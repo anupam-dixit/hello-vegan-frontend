@@ -58,6 +58,11 @@ export const pitLib={
     util:{
         test:function (){
             alert("ok")
+        },
+        headers:function () {
+            return {
+                Authorization: "Bearer "+pitLib.auth.get()?.token,
+            }
         }
     },
     media:{
@@ -68,18 +73,5 @@ export const pitLib={
             reader.onerror = reject;
         })
     },
-    fcmToken:async function (messaging) {
-        try {
-            const currentToken = await getToken(messaging, { vapidKey: 'BBxc23p9Ond5HWi5Jl829qdWfYyT6ygAun0cZLhClIrbzH63j' });
-            if (currentToken) {
-                console.log('Current token for client: ', currentToken);
-                return currentToken;
-            } else {
-                console.log('No registration token available. Request permission to generate one.');
-            }
-        } catch (error) {
-            console.error('An error occurred while retrieving token. ', error);
-        }
-    }
 
 }
